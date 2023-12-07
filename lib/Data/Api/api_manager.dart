@@ -6,7 +6,9 @@ import 'package:e_commerce/Data/Api/api_constants.dart';
 import 'package:e_commerce/Data/Api/base_error.dart';
 import 'package:e_commerce/Data/Model/Request/LoginRequest.dart';
 import 'package:e_commerce/Data/Model/Request/RegisterRequest.dart';
+import 'package:e_commerce/Data/Model/Response/CategoryOrBrandResponseDM.dart';
 import 'package:e_commerce/Data/Model/Response/LoginResponse.dart';
+import 'package:e_commerce/Data/Model/Response/ProductResponsDto.dart';
 import 'package:e_commerce/Data/Model/Response/RegisterResponse.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,8 +23,8 @@ class ApiManager {
   }
 
   //https://ecommerce.routemisr.com/api/v1/auth/signup
-  Future<Either<BaseError, RegisterResponse>> register(String name,
-      String email, String password, String rePassword, String phone) async {
+  Future<Either<Failures, RegisterResponse>> register(String name, String email,
+      String password, String rePassword, String phone) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
@@ -40,17 +42,17 @@ class ApiManager {
       if (response.statusCode == 200 && response.statusCode < 300) {
         return Right(registerResponse);
       } else {
-        return Left(BaseError(
+        return Left(Failures(
             errorMessage: registerResponse.error != null
                 ? registerResponse.error!.msg
                 : registerResponse.message));
       }
     } else {
-      return Left(BaseError(errorMessage: 'Please Check Internet Connection'));
+      return Left(Failures(errorMessage: 'Please Check Internet Connection'));
     }
   }
 
-  Future<Either<BaseError, LoginResponse>> login(
+  Future<Either<Failures, LoginResponse>> login(
       String email, String password) async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -66,10 +68,55 @@ class ApiManager {
       if (response.statusCode == 200 && response.statusCode < 300) {
         return Right(loginResponse);
       } else {
-        return Left(BaseError(errorMessage: loginResponse.message));
+        return Left(Failures(errorMessage: loginResponse.message));
       }
     } else {
-      return Left(BaseError(errorMessage: 'Please Check Internet Connection'));
+      return Left(Failures(errorMessage: 'Please Check Internet Connection'));
+    }
+  }
+
+  Future<Either<Failures, CategoryOrBrandResponseDm>> getCategories() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a mobile network.
+      Uri url =
+          Uri.https(ApiConstants.baseUrl, ApiConstants.getAllCategoriesApi);
+
+      var response = await http.get(url);
+      var categoryResponse =
+          CategoryOrBrandResponseDm.fromJson(jsonDecode(response.body));
+      if (response.statusCode == 200 && response.statusCode < 300) {
+        return Right(categoryResponse);
+      } else {
+        return Left(ServerErrors(errorMessage: categoryResponse.message));
+      }
+    } else {
+      /// no internet connection
+      return Left(
+          NetworkErrors(errorMessage: 'Please Check Internet Connection'));
+    }
+  }
+
+  Future<Either<Failures, ProductResponsDto>> getProducts() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      // I am connected to a mobile network.
+      Uri url = Uri.https(ApiConstants.baseUrl, ApiConstants.getAllProductsApi);
+
+      var response = await http.get(url);
+      var productResponse =
+          ProductResponsDto.fromJson(jsonDecode(response.body));
+      if (response.statusCode == 200 && response.statusCode < 300) {
+        return Right(productResponse);
+      } else {
+        return Left(ServerErrors(errorMessage: 'error'));
+      }
+    } else {
+      /// no internet connection
+      return Left(
+          NetworkErrors(errorMessage: 'Please Check Internet Connection'));
     }
   }
 }

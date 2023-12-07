@@ -1,4 +1,3 @@
-import 'package:e_commerce/Domain/UseCase/register_use_case.dart';
 import 'package:e_commerce/Register%20Screen/Cubit/register_screen_view_model.dart';
 import 'package:e_commerce/Register%20Screen/Cubit/states.dart';
 import 'package:e_commerce/Utils/app_colors.dart';
@@ -7,6 +6,8 @@ import 'package:e_commerce/Utils/text_field_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../Domain/di.dart';
 
 class RegisterScreen extends StatefulWidget {
   static const String routename = 'register-screen';

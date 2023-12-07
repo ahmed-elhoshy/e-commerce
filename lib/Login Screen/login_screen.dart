@@ -1,4 +1,3 @@
-import 'package:e_commerce/Domain/UseCase/login_use_case.dart';
 import 'package:e_commerce/Login%20Screen/Cubit/login_screen_view_model.dart';
 import 'package:e_commerce/Login%20Screen/Cubit/login_states.dart';
 import 'package:e_commerce/Register%20Screen/register.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../Domain/di.dart';
 import '../Utils/dialogUtils.dart';
 
 class LoginScreen extends StatefulWidget {

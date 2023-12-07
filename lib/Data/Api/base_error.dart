@@ -1,5 +1,13 @@
-class BaseError {
+class Failures {
   String? errorMessage;
 
-  BaseError({this.errorMessage});
+  Failures({this.errorMessage});
+}
+
+class ServerErrors extends Failures {
+  ServerErrors({required super.errorMessage});
+}
+
+class NetworkErrors extends Failures {
+  NetworkErrors({required super.errorMessage});
 }
